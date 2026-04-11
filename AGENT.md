@@ -33,6 +33,10 @@
   本地示例数据与 `search_journals` 的检索逻辑。
 - `web/main.ts`
   Web UI 入口，负责组装系统提示词、管理 slash command 和前端 agent 行为。
+- `.pi/agents/`
+  项目本地 subagent 定义，供 `subagent` extension 调用。
+- `.pi/prompts/`
+  项目本地 prompt templates，在官方 TUI/CLI 中以 `/name` 的形式触发。
 - `.pi/skills/`
   项目本地 skills。每个 skill 目录至少包含一个 `SKILL.md`，会被项目运行时发现，并在 Web UI 中以 `/<skill-name>` 的形式暴露。
 - `.pi/extensions/`
@@ -99,6 +103,14 @@
 - Web UI 中的本地 skill 通过 `/<skill-name>` 激活。
 - 未激活 skill 时，不应假设存在“隐藏的默认 skill”。
 - `/clear` 用于退出当前 active skill，恢复到普通对话。
+
+### Subagent 与 Prompt Template 规则
+
+- `.pi/agents/` 下的 markdown 文件用于定义可委派的 subagent。
+- `.pi/prompts/` 下的 markdown 文件用于定义官方 TUI/CLI 可见的 prompt templates，例如 `/implement`。
+- prompt template 不是 skill，不应占用 `/skill:<name>` 命名空间。
+- Web UI 继续只暴露项目 skills 与 `/clear`，不要把 `.pi/prompts/` 直接接入现有 web slash menu。
+- subagent 是增量能力，不应改变主 agent 现有的 skill 激活、slash 语义或默认工作方式。
 
 ### 自定义工具规则
 

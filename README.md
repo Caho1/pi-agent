@@ -3,6 +3,7 @@
 This is a minimal `pi SDK` demo that shows three things together:
 
 - project-local skill discovery from `.pi/skills/`
+- project-local subagents from `.pi/agents/`
 - a custom tool registered through the SDK
 - the official `pi-coding-agent` interactive mode
 - the official `pi-coding-agent` print mode for one-shot prompts
@@ -76,10 +77,17 @@ Slash commands in the TUI:
 ```text
 /skill:demo-journal-agent 请根据这段摘要推荐投稿期刊
 /skill:maoxuan-skill 用毛泽东的方法分析这个问题
+/implement add Redis caching to the session store
+/scout-and-plan refactor auth to support OAuth
+/implement-and-review add input validation to API endpoints
 /reload 重新加载 skills、extensions、context files
 ```
 
 In interactive mode, project-local skills follow the standard `pi-coding-agent` convention and appear as built-in `/skill:<name>` commands.
+
+Project-local prompt templates under `.pi/prompts/` are also available in the TUI as standard slash commands. The bundled subagent workflow prompts call the `subagent` extension tool and use project-local agents from `.pi/agents/`.
+
+The browser frontend keeps its existing project-skill slash commands only. It does not expose `.pi/prompts/` or subagent workflow commands in the web slash menu.
 
 When you add a new skill under `.pi/skills/<skill-name>/SKILL.md`, the web frontend will pick it up automatically on restart and expose it as `/<skill-name>`.
 
@@ -95,12 +103,35 @@ Type `exit` to quit the interactive session.
 /skill:maoxuan-skill 用毛泽东的方法分析：为什么一个新 AI 产品在红海里仍然可能找到突破口？
 ```
 
+```text
+/implement build a subagent workflow that reviews API changes
+```
+
+## Subagents
+
+This demo now bundles the full upstream-style `subagent` extension as a project-local extension.
+
+- `.pi/extensions/subagent/`: the extension implementation
+- `.pi/agents/`: bundled `scout`, `planner`, `reviewer`, `worker`
+- `.pi/prompts/`: workflow commands that expand to `subagent` tool calls
+
+The `subagent` tool supports:
+
+- single mode: one agent, one task
+- parallel mode: multiple agents concurrently
+- chain mode: sequential steps with `{previous}` output handoff
+
+Project-local agents use the standard safety default from the upstream example: the tool defaults to `agentScope: "user"`, while the bundled workflow prompts explicitly opt into `agentScope: "both"` and keep interactive confirmation for project-controlled agents.
+
 ## Files
 
 - `src/index.ts`: entrypoint that dispatches to the official `InteractiveMode` or `runPrintMode`
 - `src/runtime.ts`: runtime factory, resource loader overrides, and custom tool wiring
 - `src/catalog.ts`: sample journal catalog and search logic
 - `.pi/skills/*/SKILL.md`: project-local skills, exposed as slash commands in the web UI
+- `.pi/agents/*.md`: project-local subagent definitions for the `subagent` extension
+- `.pi/prompts/*.md`: project-local TUI prompt templates such as `/implement`
+- `.pi/extensions/subagent/*`: upstream-style subagent extension and helpers
 - `SOUL.md`: role, tone, identity, and decision priorities
 - `AGENT.md`: larger operating guidelines and output policy
 - `web/main.ts`: `pi-web-ui` frontend entry, system prompt assembly, and browser agent wiring
