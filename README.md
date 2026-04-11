@@ -4,7 +4,8 @@ This is a minimal `pi SDK` demo that shows three things together:
 
 - project-local skill discovery from `.pi/skills/`
 - a custom tool registered through the SDK
-- a small interactive CLI chat loop
+- the official `pi-coding-agent` interactive mode
+- the official `pi-coding-agent` print mode for one-shot prompts
 - project-level role/context files via `SOUL.md` and `AGENT.md`
 - a `pi-web-ui` browser frontend backed by the same project context
 
@@ -43,6 +44,8 @@ Interactive chat:
 npm run chat
 ```
 
+This now starts the official `InteractiveMode` exported by `@mariozechner/pi-coding-agent`. The project still injects its own context files, project-local skills, and custom tool, but the terminal UI itself is the built-in `pi-coding-agent` interface rather than a hand-rolled wrapper around `pi-tui`.
+
 One-shot demo prompt:
 
 ```bash
@@ -68,6 +71,16 @@ Slash commands in the web UI:
 /clear 退出当前 skill，回到普通对话
 ```
 
+Slash commands in the TUI:
+
+```text
+/skill:demo-journal-agent 请根据这段摘要推荐投稿期刊
+/skill:maoxuan-skill 用毛泽东的方法分析这个问题
+/reload 重新加载 skills、extensions、context files
+```
+
+In interactive mode, project-local skills follow the standard `pi-coding-agent` convention and appear as built-in `/skill:<name>` commands.
+
 When you add a new skill under `.pi/skills/<skill-name>/SKILL.md`, the web frontend will pick it up automatically on restart and expose it as `/<skill-name>`.
 
 Type `exit` to quit the interactive session.
@@ -75,16 +88,17 @@ Type `exit` to quit the interactive session.
 ## Example prompts
 
 ```text
-/demo-journal-agent 请根据这段摘要推荐适合投稿的期刊：我们提出了一种面向多模态检索的高效训练框架，重点关注召回率和推理延迟。
+/skill:demo-journal-agent 请根据这段摘要推荐适合投稿的期刊：我们提出了一种面向多模态检索的高效训练框架，重点关注召回率和推理延迟。
 ```
 
 ```text
-/maoxuan-skill 用毛泽东的方法分析：为什么一个新 AI 产品在红海里仍然可能找到突破口？
+/skill:maoxuan-skill 用毛泽东的方法分析：为什么一个新 AI 产品在红海里仍然可能找到突破口？
 ```
 
 ## Files
 
-- `src/index.ts`: session bootstrap, CLI, custom tool, skill-aware prompt
+- `src/index.ts`: entrypoint that dispatches to the official `InteractiveMode` or `runPrintMode`
+- `src/runtime.ts`: runtime factory, resource loader overrides, and custom tool wiring
 - `src/catalog.ts`: sample journal catalog and search logic
 - `.pi/skills/*/SKILL.md`: project-local skills, exposed as slash commands in the web UI
 - `SOUL.md`: role, tone, identity, and decision priorities

@@ -8,6 +8,7 @@
     "chat": "tsx src/index.ts",
     "demo": "tsx src/index.ts \"Please use the demo-journal-agent skill and recommend journals for a machine learning paper about efficient multimodal retrieval.\"",
     "check": "tsc --noEmit",
+    "test": "node --import tsx --test test/*.test.ts",
     "web:dev": "vite --config vite.config.ts",
     "web:build": "vite build --config vite.config.ts",
     "web:check": "tsc --noEmit -p tsconfig.web.json"

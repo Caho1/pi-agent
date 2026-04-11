@@ -26,9 +26,7 @@
 - `AGENT.md`
   定义项目说明、运行规则、协作约束和修改原则。
 - `src/index.ts`
-  终端入口，负责在官方 `pi-coding-agent` `InteractiveMode` 与 `runPrintMode` 之间分发。
-- `src/runtime.ts`
-  运行时工厂，负责装配项目上下文、资源加载器覆盖项和自定义工具，并创建 `pi-coding-agent` runtime。
+  CLI 会话入口，负责加载项目上下文、注册自定义工具、创建 agent session。
 - `src/catalog.ts`
   本地示例数据与 `search_journals` 的检索逻辑。
 - `web/main.ts`
@@ -45,9 +43,9 @@
 - `npm install`
   安装依赖。
 - `npm run chat`
-  启动官方 `pi-coding-agent` 交互模式。
+  启动命令行交互式对话。
 - `npm run demo`
-  运行官方 print mode 下的一次性演示 prompt。
+  运行一个内置的一次性演示 prompt。
 - `npm run web:dev`
   启动 Web UI 开发服务器。
 - `npm run check`
