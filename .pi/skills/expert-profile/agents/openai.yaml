@@ -1,0 +1,4 @@
+interface:
+  display_name: "Expert Profile"
+  short_description: "Extract expert homepage data"
+  default_prompt: "Use $expert-profile to extract structured fields from an expert homepage URL and prepare clean long-text sections for LLM processing."
